@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>CDC Parking Lot Map (Pan & Zoom)</title>
+		<style>
+    /* --- Pan/Zoom frame --- */
+    .pz-frame {
+      width: 100%;
+      height: 90vh;                /* Viewport height; adjust if you prefer */
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      overflow: hidden;            /* Hide when panning out of bounds */
+      position: relative;
+      background: #fff;
+      touch-action: none;          /* Enables custom touch gestures */
+    }
+    .pz-content {
+      /* We’ll transform this element via JS (translate + scale) */
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+    .pz-controls {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+    .pz-controls button {
+      background: #0078d4;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font: 600 14px "Segoe UI", sans-serif;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    }
+    .pz-controls button:hover { opacity: .9; }
+
+    /* --- Your existing styles (with earlier fixes) --- */
+    .parking-scroll-wrapper { width: 100%; border: none; }
+    #cdc-parking {
+      font-family: "Segoe UI", sans-serif;
+      width: 3029px;               /* Fixed “design size” for consistent baseline zoom */
+      height: 2258px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 10px 10px;
+      box-sizing: border-box;
+      border: 1px solid green;
+      border-radius: 10px;
+    }
+
+    .lot-top { display: block; justify-content: center; }
+    .stall {
+      width: 40.95px; height: 81.9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; text-align: center; border: 1px solid #ccc; padding: 4px;
+    }
+    .lot-driveway {
+      width: 100%; height: 100px; background-color: #f0f0f0;
+      display: flex; justify-content: center; font-size: 34px; color: navy;
+      align-items: center; margin: 0 auto;
+    }
+    .lot-top-labels { display: flex; justify-content: center; width: 100%; }
+    .labels-stalls, .labels-stalls-2 {
+      width: 64px; height: 26px; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: bold; text-align: center; color: green; padding: 4px;
+    }
+    .labels-stalls { border: 1px solid white; }
+    .labels-stalls-2 { border: 1px solid #f0f0f0; background-color: #f0f0f0; }
+
+    .lot-top-stalls { display: flex; justify-content: center; text-align: center; }
+    .lot-bottom { display: flex; justify-content: center; }
+    .lot-bottom-entrances { display: flex; justify-content: flex-start; background-color: #f0f0f0; height: 80px; }
+    .lot-bottom-entrances-1 { height: 80px; width: 74px; }
+    .lot-bottom-entrances-2, .lot-bottom-entrances-4 {
+      display: flex; height: 80px; width: 148px; align-items: flex-end; justify-content: center;
+      font-size: 18px; font-weight: bold; text-align: center; border-bottom: 8px solid darkgreen;
+    }
+    .lot-bottom-entrances-3 { height: 80px; width: 370px; }
+    .lot-bottom-entrances-4 { width: 74px; }
+    .lot-bottom-entrances-5 { height: 80px; width: 296px; }
+
+    .lot-bottom-building {
+      display: flex; flex-direction: column; justify-content: center;
+      background-color: #b6bfba; text-align: center; align-items: center;
+      font-size: 32px; height: 166px;
+    }
+    .lot-bottom-1 { display: block; justify-content: center; }
+    .lot-bottom-stalls { display: flex; justify-content: flex-start; text-align: center; }
+    .lot-bottom-stalls-vertical, .lot-bottom-stalls-vertical-2 { display: block; }
+    .lot-bottom-vertical-sidewalk { display: block; width: 100%; height: 396px; background-color: #f0f0f0; }
+
+    .labels-stalls-vertical {
+      width: 26px; height: 64px; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: bold; color: green; text-align: center;
+      writing-mode: vertical-lr; transform: rotate(180deg);
+      border: 1px solid #f0f0f0; background-color: #f0f0f0;
+    }
+    .stall-vertical {
+      width: 100px; height: 64px; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: black; text-align: center; border: 1px solid #ccc;
+    }
+  </style>
+	</head>
+	<body>
+		<!-- Pan/Zoom Frame -->
+		<div class="pz-frame" id="pz-frame">
+			<div class="pz-content" id="pz-content">
+				<!-- ======= YOUR MAP CONTENT START ======= -->
+				<div class="parking-scroll-wrapper">
+					<div id="cdc-parking">
+						<!-- Top row -->
+						<div class="lot-top">
+							<div class="lot-top-labels">
+								<div class="labels-stalls" style="color: black; font-weight: normal;">James!</div>
+								<div class="labels-stalls" style="color: black; font-weight: normal;">Chinook Medical</div>
+								<div class="labels-stalls" style="color: black; font-weight: normal;">Chinook Medical</div>
+								<div class="labels-stalls" style="color: black; font-weight: normal;">Chinook Medical</div>
+								<div class="labels-stalls" style="color: black; font-weight: normal;">Chinook Medical</div>
+								<div class="labels-stalls" style="color: black; font-weight: normal;">Chinook Medical</div>
+								<div class="labels-stalls">CDC 109</div>
+								<div class="labels-stalls">CDC 108</div>
+								<div class="labels-stalls">CDC 107</div>
+								<div class="labels-stalls">CDC 106</div>
+								<div class="labels-stalls">CDC 105</div>
+								<div class="labels-stalls">CDC 104</div>
+								<div class="labels-stalls">CDC 103</div>
+								<div class="labels-stalls">CDC 102</div>
+								<div class="labels-stalls">CDC 101</div>
+								<div class="labels-stalls">CDC 100</div>
+							</div>
+						</div>
+						<div class="lot-top">
+							<div class="lot-top-stalls">
+								<div class="stall" style="background-color: #D9D9D9;">n/a</div>
+								<div class="stall" style="background-color: #DAE9F8;">n/a</div>
+								<div class="stall" style="background-color: #D9D9D9;">n/a</div>
+								<div class="stall" style="background-color: #DAE9F8;">n/a</div>
+								<div class="stall" style="background-color: #D9D9D9;">n/a</div>
+								<div class="stall" style="background-color: #DAE9F8;">n/a</div>
+								<div class="stall" style="background-color: #D9D9D9;">Reception</div>
+								<div class="stall" style="background-color: #DAE9F8;">Sarah F.</div>
+								<div class="stall" style="background-color: #D9D9D9;">Joy O.</div>
+								<div class="stall" style="background-color: #92D050;">Booking</div>
+								<div class="stall" style="background-color: #92D050;">Booking</div>
+								<div class="stall" style="background-color: #92D050;">Booking</div>
+								<div class="stall" style="background-color: #D9D9D9;">Brianna W.</div>
+								<div class="stall" style="background-color: #DAE9F8;">OPS</div>
+								<div class="stall" style="background-color: #D9D9D9;">Rahman A.</div>
+								<div class="stall" style="background-color: #DAE9F8;">Wendy S.</div>
+							</div>
+						</div>
+						<!-- Drive way -->
+						<div class="lot-driveway">DRIVE WAY</div>
+						<!-- Bottom lot -->
+						<div class="lot-bottom">
+							<div class="lot-bottom-1">
+								<!-- Bottom row -->
+								<div class="lot-top-stalls">
+									<div class="stall" style="background-color: #D9D9D9;">Handicap</div>
+									<div class="stall" style="border: 1px solid #f0f0f0; background-color: #f0f0f0;">
+									</div>
+									<div class="stall" style="border: 1px solid #f0f0f0; background-color: #f0f0f0;">
+									</div>
+									<div class="stall" style="background-color: #DAE9F8;">n/a</div>
+									<div class="stall" style="background-color: #D9D9D9;">n/a</div>
+									<div class="stall" style="background-color: #DAE9F8;">Theresa R.</div>
+									<div class="stall" style="background-color: #D9D9D9;">Chelsea N.</div>
+									<div class="stall" style="background-color: #DAE9F8;">OPS</div>
+									<div class="stall" style="background-color: #92D050;">Booking</div>
+									<div class="stall" style="background-color: #DAE9F8;">Wendy M.</div>
+									<div class="stall" style="background-color: #D9D9D9;">Tiffany I.</div>
+									<div class="stall" style="background-color: #DAE9F8;">Danielle S.</div>
+									<div class="stall" style="background-color: #D9D9D9;">Darcy V.</div>
+								</div>
+								<div class="lot-top">
+									<div class="lot-top-labels">
+										<div class="labels-stalls-2" style="color: black; font-weight: normal;">Handicap</div>
+										<div class="labels-stalls" style="border: 1px solid #f0f0f0; background-color: #f0f0f0;">
+										</div>
+										<div class="labels-stalls" style="border: 1px solid #f0f0f0; background-color: #f0f0f0;">
+										</div>
+										<div class="labels-stalls-2" style="color: black; font-weight: normal;">Chinook Medical</div>
+										<div class="labels-stalls-2" style="color: black; font-weight: normal;">Chinook Medical</div>
+										<div class="labels-stalls-2">CDC 177</div>
+										<div class="labels-stalls-2">CDC 178</div>
+										<div class="labels-stalls-2">CDC 179</div>
+										<div class="labels-stalls-2">CDC 180</div>
+										<div class="labels-stalls-2">CDC 181</div>
+										<div class="labels-stalls-2">CDC 182</div>
+										<div class="labels-stalls-2">CDC 183</div>
+										<div class="labels-stalls-2">CDC 184</div>
+									</div>
+								</div>
+								<div class="lot-bottom-entrances">
+									<div class="lot-bottom-entrances-1">
+									</div>
+									<div class="lot-bottom-entrances-2">Entrance</div>
+									<div class="lot-bottom-entrances-3">
+									</div>
+									<div class="lot-bottom-entrances-4">Exit</div>
+									<div class="lot-bottom-entrances-5">
+									</div>
+								</div>
+								<div class="lot-bottom-building">
+									<div style="margin-bottom: 4px;">
+                  Canada Diagnostic Centres <br />
+									<span style="font-size: 20px;">303 - 5920 1A Street SW Calgary, AB T2H 0G3</span>
+								</div>
+							</div>
+						</div>
+						<div class="lot-bottom-vertical-sidewalk">
+						</div>
+						<div class="lot-bottom-stalls-vertical-2">
+							<div class="labels-stalls-vertical">CDC 185</div>
+							<div class="labels-stalls-vertical">CDC 186</div>
+							<div class="labels-stalls-vertical">CDC 187</div>
+							<div class="labels-stalls-vertical">CDC 188</div>
+							<div class="labels-stalls-vertical">CDC 189</div>
+							<div class="labels-stalls-vertical">CDC 190</div>
+						</div>
+						<div class="lot-bottom-stalls-vertical">
+							<div class="stall-vertical" style="background-color: #D9D9D9;">Billing / Darcy</div>
+							<div class="stall-vertical" style="background-color: #92D050;">Booking</div>
+							<div class="stall-vertical" style="background-color: #D9D9D9;">HR</div>
+							<div class="stall-vertical" style="background-color: #DAE9F8;">HR</div>
+							<div class="stall-vertical" style="background-color: #D9D9D9;">HR</div>
+							<div class="stall-vertical" style="background-color: #DAE9F8;">HR</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- ======= YOUR MAP CONTENT END ======= -->
+		</div>
+		<!-- Zoom Controls -->
+		<div class="pz-controls" aria-label="map zoom controls">
+			<button type="button" id="zoom-in" title="Zoom in">+</button>
+			<button type="button" id="zoom-out" title="Zoom out">−</button>
+			<button type="button" id="zoom-reset" title="Reset view">Reset</button>
+		</div>
+	</div>
+	<script>
+    (function () {
+      const frame = document.getElementById('pz-frame');
+      const content = document.getElementById('pz-content');
+
+      // Transform state
+      let scale = 1;
+      const minScale = 0.5;
+      const maxScale = 4;
+      let tx = 0, ty = 0;           // translation in px
+      let isDragging = false;
+      let lastX = 0, lastY = 0;
+
+      function applyTransform() {
+        content.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+      }
+
+      // Keep point under cursor fixed while zooming
+      function zoomAtPoint(deltaScale, clientX, clientY) {
+        const newScale = clamp(scale * deltaScale, minScale, maxScale);
+        if (newScale === scale) return;
+
+        const rect = frame.getBoundingClientRect();
+        const cx = clientX - rect.left;
+        const cy = clientY - rect.top;
+
+        // Convert screen point to content coordinates
+        const xBefore = (cx - tx) / scale;
+        const yBefore = (cy - ty) / scale;
+
+        scale = newScale;
+
+        // Recompute translation so (xBefore, yBefore) stays under cursor
+        tx = cx - xBefore * scale;
+        ty = cy - yBefore * scale;
+        applyTransform();
+      }
+
+      function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+      // Mouse wheel zoom
+      frame.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 1.1 : 0.9;
+        zoomAtPoint(delta, e.clientX, e.clientY);
+      }, { passive: false });
+
+      // Double-click zoom in
+      frame.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        zoomAtPoint(1.2, e.clientX, e.clientY);
+      });
+
+      // Drag to pan
+      frame.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        frame.style.cursor = 'grabbing';
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        tx += dx;
+        ty += dy;
+        applyTransform();
+      });
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+        frame.style.cursor = 'default';
+      });
+
+      // Touch: pinch to zoom + drag
+      let touchMode = null; // 'drag' or 'pinch'
+      let lastTouch = null;
+      let lastDist = 0;
+      let pinchMid = { x: 0, y: 0 };
+
+      frame.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+          touchMode = 'drag';
+          lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        } else if (e.touches.length === 2) {
+          touchMode = 'pinch';
+          lastDist = distance(e.touches[0], e.touches[1]);
+          pinchMid = midpoint(e.touches[0], e.touches[1]);
+        }
+      }, { passive: false });
+
+      frame.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (touchMode === 'drag' && e.touches.length === 1) {
+          const t = e.touches[0];
+          const dx = t.clientX - lastTouch.x;
+          const dy = t.clientY - lastTouch.y;
+          lastTouch = { x: t.clientX, y: t.clientY };
+          tx += dx; ty += dy;
+          applyTransform();
+        } else if (touchMode === 'pinch' && e.touches.length === 2) {
+          const newDist = distance(e.touches[0], e.touches[1]);
+          const factor = newDist / lastDist;
+          lastDist = newDist;
+          // Zoom around pinch midpoint
+          zoomAtPoint(factor, pinchMid.x, pinchMid.y);
+          pinchMid = midpoint(e.touches[0], e.touches[1]); // update midpoint as fingers move
+        }
+      }, { passive: false });
+
+      frame.addEventListener('touchend', (e) => {
+        if (e.touches.length === 0) {
+          touchMode = null;
+          lastTouch = null;
+        }
+      });
+
+      function distance(a, b) {
+        const dx = a.clientX - b.clientX;
+        const dy = a.clientY - b.clientY;
+        return Math.hypot(dx, dy);
+      }
+      function midpoint(a, b) {
+        return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
+      }
+
+      // Controls
+      document.getElementById('zoom-in').addEventListener('click', () => {
+        const rect = frame.getBoundingClientRect();
+        zoomAtPoint(1.2, rect.left + rect.width / 2, rect.top + rect.height / 2);
+      });
+      document.getElementById('zoom-out').addEventListener('click', () => {
+        const rect = frame.getBoundingClientRect();
+        zoomAtPoint(0.8, rect.left + rect.width / 2, rect.top + rect.height / 2);
+      });
+      document.getElementById('zoom-reset').addEventListener('click', () => {
+        scale = 1; tx = 0; ty = 0; applyTransform();
+      });
+
+      // Optional: center map initially (keeps your default “zoomed-out” look)
+      // Since #cdc-parking is 1200px wide, we can center it horizontally
+      window.addEventListener('load', () => {
+        // Center horizontally, leave vertical at top
+        const rect = frame.getBoundingClientRect();
+        const contentWidth = 1200 * scale;
+        tx = Math.max(0, (rect.width - contentWidth) / 2);
+        ty = 0;
+        applyTransform();
+      });
+    })();
+  </script>
+</body>
+</html>
