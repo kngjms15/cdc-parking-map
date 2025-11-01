@@ -4,58 +4,8 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<title>CDC Parking Lot Map (Pan & Zoom)</title>
-		<style>
-    /* --- Pan/Zoom frame --- */
-    .pz-frame {
-      width: 100%;
-      height: 90vh;                /* Viewport height; adjust if you prefer */
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      overflow: hidden;            /* Hide when panning out of bounds */
-      position: relative;
-      background: #fff;
-      touch-action: none;          /* Enables custom touch gestures */
-    }
-    .pz-content {
-      /* We’ll transform this element via JS (translate + scale) */
-      transform-origin: 0 0;
-      will-change: transform;
-    }
-    .pz-controls {
-      position: absolute;
-      right: 12px;
-      bottom: 12px;
-      display: flex;
-      gap: 6px;
-      z-index: 10;
-    }
-    .pz-controls button {
-      background: #0078d4;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 10px;
-      font: 600 14px "Segoe UI", sans-serif;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,.15);
-    }
-    .pz-controls button:hover { opacity: .9; }
-
-    /* --- Your existing styles (with earlier fixes) --- */
-    .parking-scroll-wrapper { width: 100%; border: none; }
-    #cdc-parking {
-      font-family: "Segoe UI", sans-serif;
-      width: 3029px;               /* Fixed “design size” for consistent baseline zoom */
-      height: 2258px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 10px 10px;
-      box-sizing: border-box;
-      border: 1px solid green;
-      border-radius: 10px;
-    }
-
-  </style>
+    <link rel="stylesheet" href="styles.css">
+	
 	</head>
 	<body>
 		<!-- Pan/Zoom Frame -->
@@ -63,11 +13,133 @@
 			<div class="pz-content" id="pz-content">
 				<!-- ======= YOUR MAP CONTENT START ======= -->
 				<div class="parking-scroll-wrapper">
-					<div id="cdc-parking">
-						
-						<div>
-							Draw your map here!
-						</div>
+					<div id="cdc-parking"> <!--Outer boundary-->
+						<div class="section-a"> <!--Section A Stalls-->
+              <div class="section-a-sidewalk"></div>
+              <div class="section-a-stall">Handicap A1</div>
+              <div class="section-a-stall">Section A2</div>
+              <div class="section-a-stall">Section A3</div>
+              <div class="section-a-stall">Section A4</div>
+              <div class="section-a-stall">Section A5</div>
+              <div class="section-a-stall">Section A6</div>
+              <div class="section-a-stall">Section A7</div>
+              <div class="section-a-stall">Section A8</div>
+              <div class="section-a-stall">Section A9</div>
+              <div class="section-a-stall">Section A10</div>
+              <div class="section-a-stall">Section A11</div>
+              <div class="section-a-stall">Section A12</div>
+              <div class="section-a-stall">Section A13</div>
+              <div class="section-a-stall">Section A14</div>
+              <div class="section-a-stall">Section A15</div>
+              <div class="section-a-stall">Section A16</div>
+              <div class="section-a-stall">Section A17</div>
+              <div class="section-a-stall">Section A18</div>
+              <div class="section-a-stall">Section A19</div>
+              <div class="section-a-stall">Section A20</div>
+              <div class="section-a-stall">Section A21</div>
+              <div class="section-a-stall">Section A22</div>
+              <div class="section-a-stall">Section A23</div>
+              <div class="section-a-stall">Section A24</div>
+              <div class="section-a-stall">Section A25</div>
+              <div class="section-a-stall">Section A26</div>
+              <div class="section-a-stall">Section A27</div>
+              <div class="section-a-stall">Section A28</div>
+              <div class="section-a-stall">Section A29</div>
+              <div class="section-a-stall">Section A30</div>
+              <div class="section-a-stall">Section A31</div>
+              <div class="section-a-stall">Section A32</div>
+              <div class="section-a-stall">Section A33</div>
+              <div class="section-a-stall">Section A34</div>
+              <div class="section-a-stall">Section A35</div>
+              <div class="section-a-stall">Section A36</div>
+              <div class="section-a-stall">Section A37</div>
+              <div class="section-a-stall">Section A38</div>
+              <div class="section-a-stall">Section A39</div>
+              <div class="section-a-stall">Section A40</div>
+              <div class="section-a-stall">Section A41</div>
+              <div class="section-a-stall">Section A42</div>
+              <div class="section-a-stall">Section A43</div>
+              <div class="section-a-stall">Section A44</div>
+              <div class="section-a-stall">Section A45</div>
+              <div class="section-a-stall">Section A46</div>
+              <div class="section-a-stall">Section A47</div>
+              <div class="section-a-stall">Section A48</div>
+              <div class="section-a-stall">Section A49</div>
+              <div class="section-a-stall">Section A50</div>
+              <div class="section-a-stall">Section A51</div>
+              <div class="section-a-stall">Section A52</div>
+              <div class="section-a-stall">Section A53</div>
+              <div class="section-a-stall">Section A54</div>
+              <div class="section-a-stall">Section A55</div>
+              <div class="section-a-stall">Section A56</div>
+            </div> 
+            <div class="container-middle"> <!-- Container middle area -->
+              <div class="container-middle-left">
+                <div class="container-middle-left-top">
+                  <div class="sidewalk-1">
+                    side walk 1
+                  </div> 
+                  <div class="container-section-bcd"> <!-- Container Building and surrounding stalls -->
+                    <div class="bcd-north-driveway">
+                      bcd-north-driveway
+                    </div>
+                    <div class="container-section-bcd-2">
+                      <div class="container-section-b-building-stall"> <!-- Container building and bcd section-->
+                        <div class="section-b">
+                          <div class="section-b-stall" style="width: 69.7px;">Handicap B1</div>
+                          <div class="section-b-stall">Section B2</div>
+                          <div class="section-b-stall">Section B3</div>
+                          <div class="section-b-stall">Section B4</div>
+                          <div class="section-b-stall">Section B5</div>
+                          <div class="section-b-stall">Section B6</div>
+                          <div class="section-b-stall">Section B7</div>
+                          <div class="section-b-stall">Section B8</div>
+                          <div class="section-b-stall">Section B9</div>
+                          <div class="section-b-stall">Section B10</div>
+                          <div class="section-b-stall" style="width: 92.51px; border: none; background-color: #D9D9D9;">Side walk n1</div>
+                          <div class="section-b-stall">Section B11</div>
+                          <div class="section-b-stall">Section B12</div>
+                          <div class="section-b-stall">Section B13</div>
+                          <div class="section-b-stall">Section B14</div>
+                          <div class="section-b-stall">Section B15</div>
+                          <div class="section-b-stall">Section B16</div>
+                          <div class="section-b-stall">Section B17</div>
+                          <div class="section-b-stall">Section B18</div>
+                          <div class="section-b-stall" style="width: 35.48px; border: none; background-color: #D9D9D9;">Side walk n2</div>
+                          <div class="section-b-stall">Section B19</div>
+                          <div class="section-b-stall">Section B20</div>
+                          <div class="section-b-stall">Section B21</div>
+                          <div class="section-b-stall">Section B22</div>
+                          <div class="section-b-stall">Section B23</div>
+                          <div class="section-b-stall">Section B24</div>
+                          <div class="section-b-stall">Section B25</div>
+                          <div class="section-b-stall">Section B26</div>
+                          <div class="section-b-stall">Section B27</div>
+                          <div class="section-b-stall" style="width: 76.03px;">Handicap B28</div>
+                          <div class="section-b-stall"style="width: 95.04px; border: none; background-color: #D9D9D9;">Side walk n3</div>
+                          <div class="section-b-stall">Section B29</div>
+                          <div class="section-b-stall">Section B30</div>
+                          <div class="section-b-stall">Section B31</div>
+                          <div class="section-b-stall">Section B32</div>
+                          <div class="section-b-stall">Section B33</div>
+                          <div class="section-b-stall">Section B34</div>
+                          <div class="section-b-stall">Section B35</div>
+                          <div class="section-b-stall">Section B36</div>
+                          <div class="section-b-stall">Section B37</div>
+                          <div class="section-b-stall">Section B38</div>
+                        </div>
+                        <div class="building-north-sidewalk">testing where this is</div>
+                      </div>
+                      <div class="sfod">where is this</div>
+                    </div>
+                  </div>  
+                </div>
+              </div>
+              <div class="container-middle-right"> <!-- Container middle right-->
+              ef-north driveway
+              </div>
+            </div>
+
 					</div>
 				</div>
 			</div>
