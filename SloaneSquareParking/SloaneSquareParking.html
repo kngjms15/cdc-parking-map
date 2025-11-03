@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		<title>CDC Parking Lot Map (Pan & Zoom)</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>CDC Parking Lot Map (Pan & Zoom)</title>
     <link rel="stylesheet" href="styles.css">
-	
-	</head>
-	<body>
-		<!-- Pan/Zoom Frame -->
-		<div class="pz-frame" id="pz-frame">
-			<div class="pz-content" id="pz-content">
-				<!-- ======= YOUR MAP CONTENT START ======= -->
-				<div class="parking-scroll-wrapper">
-					<div id="cdc-parking"> <!--Outer boundary-->
-						<div class="section-a"> <!--Section A Stalls-->
+  </head>
+  <body>
+    <!-- Pan/Zoom Frame -->
+    <div class="pz-frame" id="pz-frame">
+      <div class="pz-content" id="pz-content">
+        <!-- ======= YOUR MAP CONTENT START ======= -->
+        <div class="parking-scroll-wrapper">
+          <div id="cdc-parking"> <!--Outer boundary-->
+            <div class="section-a"> <!--Section A Stalls-->
               <div class="section-a-sidewalk"></div>
               <div class="section-a-stall">Handicap A1</div>
               <div class="section-a-stall">Section A2</div>
@@ -71,18 +70,15 @@
               <div class="section-a-stall">Section A53</div>
               <div class="section-a-stall">Section A54</div>
               <div class="section-a-stall">Section A55</div>
+              <!-- ... -->
               <div class="section-a-stall">Section A56</div>
             </div> 
             <div class="container-middle"> <!-- Container middle area -->
               <div class="container-middle-left">
                 <div class="container-middle-left-top">
-                  <div class="sidewalk-1">
-                    side walk 1
-                  </div> 
+                  <div class="sidewalk-1">side walk 1</div> 
                   <div class="container-section-bcd"> <!-- Container Building and surrounding stalls -->
-                    <div class="bcd-north-driveway">
-                      bcd-north-driveway
-                    </div>
+                    <div class="bcd-north-driveway">bcd-north-driveway</div>
                     <div class="container-section-bcd-2">
                       <div class="container-section-b-building-stall"> <!-- Container building and bcd section-->
                         <div class="section-b">
@@ -116,7 +112,7 @@
                           <div class="section-b-stall">Section B26</div>
                           <div class="section-b-stall">Section B27</div>
                           <div class="section-b-stall" style="width: 76.03px;">Handicap B28</div>
-                          <div class="section-b-stall"style="width: 95.04px; border: none; background-color: #D9D9D9;">Side walk n3</div>
+                          <div class="section-b-stall" style="width: 95.04px; border: none; background-color: #D9D9D9;">Side walk n3</div>
                           <div class="section-b-stall">Section B29</div>
                           <div class="section-b-stall">Section B30</div>
                           <div class="section-b-stall">Section B31</div>
@@ -136,174 +132,152 @@
                 </div>
               </div>
               <div class="container-middle-right"> <!-- Container middle right-->
-              ef-north driveway
+                ef-north driveway
               </div>
             </div>
+          </div>
+        </div>
+        <!-- ======= YOUR MAP CONTENT END ======= -->
+      </div>
+    </div>
 
-					</div>
-				</div>
-			</div>
-			<!-- ======= YOUR MAP CONTENT END ======= -->
-		</div>
-		<!-- Zoom Controls -->
-		<div class="pz-controls" aria-label="map zoom controls">
-			<button type="button" id="zoom-in" title="Zoom in">+</button>
-			<button type="button" id="zoom-out" title="Zoom out">−</button>
-			<button type="button" id="zoom-reset" title="Reset view">Reset</button>
-		</div>
-	</div>
-	<script>
-    (function () {
-      const frame = document.getElementById('pz-frame');
-      const content = document.getElementById('pz-content');
+    <!-- Zoom Controls -->
+    <div class="pz-controls" aria-label="map zoom controls">
+      <button type="button" id="zoom-in" title="Zoom in">+</button>
+      <button type="button" id="zoom-out" title="Zoom out">−</button>
+      <button type="button" id="zoom-reset" title="Reset view">Reset</button>
+    </div>
 
-      // Transform state
-      let scale = 1;
-      const minScale = 0.5;
-      const maxScale = 4;
-      let tx = 0, ty = 0;           // translation in px
-      let isDragging = false;
-      let lastX = 0, lastY = 0;
+    <script>
+      (function () {
+        // Fixed design size (your Figma canvas)
+        const DESIGN_W = 3029;
+        const DESIGN_H = 2258;
 
-      function applyTransform() {
-        content.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
-      }
+        const frame = document.getElementById('pz-frame');
+        const content = document.getElementById('pz-content');
+        const parking = document.getElementById('cdc-parking');
 
-      // Keep point under cursor fixed while zooming
-      function zoomAtPoint(deltaScale, clientX, clientY) {
-        const newScale = clamp(scale * deltaScale, minScale, maxScale);
-        if (newScale === scale) return;
+        // Ensure map is sized to design pixels
+        parking.style.width  = DESIGN_W + 'px';
+        parking.style.height = DESIGN_H + 'px';
 
-        const rect = frame.getBoundingClientRect();
-        const cx = clientX - rect.left;
-        const cy = clientY - rect.top;
+        // Pan/Zoom state
+        let baseScale = 1;   // computed to fit entire map
+        let minScale  = 1;   // == baseScale (max zoom-out)
+        let maxScale  = 4;   // you can adjust
+        let scale     = 0;   // current scale
+        let tx = 0, ty = 0;  // translation
 
-        // Convert screen point to content coordinates
-        const xBefore = (cx - tx) / scale;
-        const yBefore = (cy - ty) / scale;
+        let isDragging = false;
+        let lastX = 0, lastY = 0;
 
-        scale = newScale;
-
-        // Recompute translation so (xBefore, yBefore) stays under cursor
-        tx = cx - xBefore * scale;
-        ty = cy - yBefore * scale;
-        applyTransform();
-      }
-
-      function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
-
-      // Mouse wheel zoom
-      frame.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const delta = e.deltaY < 0 ? 1.1 : 0.9;
-        zoomAtPoint(delta, e.clientX, e.clientY);
-      }, { passive: false });
-
-      // Double-click zoom in
-      frame.addEventListener('dblclick', (e) => {
-        e.preventDefault();
-        zoomAtPoint(1.2, e.clientX, e.clientY);
-      });
-
-      // Drag to pan
-      frame.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        lastX = e.clientX;
-        lastY = e.clientY;
-        frame.style.cursor = 'grabbing';
-      });
-      window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const dx = e.clientX - lastX;
-        const dy = e.clientY - lastY;
-        lastX = e.clientX;
-        lastY = e.clientY;
-        tx += dx;
-        ty += dy;
-        applyTransform();
-      });
-      window.addEventListener('mouseup', () => {
-        isDragging = false;
-        frame.style.cursor = 'default';
-      });
-
-      // Touch: pinch to zoom + drag
-      let touchMode = null; // 'drag' or 'pinch'
-      let lastTouch = null;
-      let lastDist = 0;
-      let pinchMid = { x: 0, y: 0 };
-
-      frame.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        if (e.touches.length === 1) {
-          touchMode = 'drag';
-          lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        } else if (e.touches.length === 2) {
-          touchMode = 'pinch';
-          lastDist = distance(e.touches[0], e.touches[1]);
-          pinchMid = midpoint(e.touches[0], e.touches[1]);
+        function getBaseScale() {
+          const fw = frame.clientWidth;
+          const fh = frame.clientHeight;
+          return Math.min(fw / DESIGN_W, fh / DESIGN_H);
         }
-      }, { passive: false });
 
-      frame.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if (touchMode === 'drag' && e.touches.length === 1) {
-          const t = e.touches[0];
-          const dx = t.clientX - lastTouch.x;
-          const dy = t.clientY - lastTouch.y;
-          lastTouch = { x: t.clientX, y: t.clientY };
+        function centerAtScale(s) {
+          const fw = frame.clientWidth;
+          const fh = frame.clientHeight;
+          const cw = DESIGN_W * s;
+          const ch = DESIGN_H * s;
+          // center within frame (no reflow)
+          tx = Math.round((fw - cw) / 2);
+          ty = Math.round((fh - ch) / 2);
+        }
+
+        function applyTransform() {
+          content.style.transformOrigin = '0 0';
+          content.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+        }
+
+        function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+        function setBaseAndFit() {
+          baseScale = getBaseScale();
+          minScale  = baseScale;
+          // If we were smaller than base (e.g., after a resize), snap back up
+          if (scale < minScale) scale = minScale;
+          // Center at current scale (usually base on first run)
+          centerAtScale(scale);
+          applyTransform();
+        }
+
+        // Zoom keeping pointer location stable
+        function zoomAtPoint(deltaScale, clientX, clientY) {
+          const newScale = clamp(scale * deltaScale, minScale, maxScale);
+          if (newScale === scale) return;
+
+          const rect = frame.getBoundingClientRect();
+          const cx = clientX - rect.left;
+          const cy = clientY - rect.top;
+
+          const xBefore = (cx - tx) / scale;
+          const yBefore = (cy - ty) / scale;
+
+          scale = newScale;
+
+          tx = cx - xBefore * scale;
+          ty = cy - yBefore * scale;
+          applyTransform();
+        }
+
+        // Init to show entire map (and set that as max zoom-out)
+        window.addEventListener('load', setBaseAndFit);
+        window.addEventListener('resize', setBaseAndFit);
+
+        // Wheel zoom
+        frame.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const delta = e.deltaY < 0 ? 1.1 : 0.9;
+          zoomAtPoint(delta, e.clientX, e.clientY);
+        }, { passive: false });
+
+        // Double-click zoom in
+        frame.addEventListener('dblclick', (e) => {
+          e.preventDefault();
+          zoomAtPoint(1.2, e.clientX, e.clientY);
+        });
+
+        // Drag to pan
+        frame.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          lastX = e.clientX;
+          lastY = e.clientY;
+          frame.style.cursor = 'grabbing';
+        });
+        window.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - lastX;
+          const dy = e.clientY - lastY;
+          lastX = e.clientX;
+          lastY = e.clientY;
           tx += dx; ty += dy;
           applyTransform();
-        } else if (touchMode === 'pinch' && e.touches.length === 2) {
-          const newDist = distance(e.touches[0], e.touches[1]);
-          const factor = newDist / lastDist;
-          lastDist = newDist;
-          // Zoom around pinch midpoint
-          zoomAtPoint(factor, pinchMid.x, pinchMid.y);
-          pinchMid = midpoint(e.touches[0], e.touches[1]); // update midpoint as fingers move
-        }
-      }, { passive: false });
+        });
+        window.addEventListener('mouseup', () => {
+          isDragging = false;
+          frame.style.cursor = 'default';
+        });
 
-      frame.addEventListener('touchend', (e) => {
-        if (e.touches.length === 0) {
-          touchMode = null;
-          lastTouch = null;
-        }
-      });
-
-      function distance(a, b) {
-        const dx = a.clientX - b.clientX;
-        const dy = a.clientY - b.clientY;
-        return Math.hypot(dx, dy);
-      }
-      function midpoint(a, b) {
-        return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
-      }
-
-      // Controls
-      document.getElementById('zoom-in').addEventListener('click', () => {
-        const rect = frame.getBoundingClientRect();
-        zoomAtPoint(1.2, rect.left + rect.width / 2, rect.top + rect.height / 2);
-      });
-      document.getElementById('zoom-out').addEventListener('click', () => {
-        const rect = frame.getBoundingClientRect();
-        zoomAtPoint(0.8, rect.left + rect.width / 2, rect.top + rect.height / 2);
-      });
-      document.getElementById('zoom-reset').addEventListener('click', () => {
-        scale = 1; tx = 0; ty = 0; applyTransform();
-      });
-
-      // Optional: center map initially (keeps your default “zoomed-out” look)
-      // Since #cdc-parking is 1200px wide, we can center it horizontally
-      window.addEventListener('load', () => {
-        // Center horizontally, leave vertical at top
-        const rect = frame.getBoundingClientRect();
-        const contentWidth = 1200 * scale;
-        tx = Math.max(0, (rect.width - contentWidth) / 2);
-        ty = 0;
-        applyTransform();
-      });
-    })();
-  </script>
-</body>
+        // Buttons
+        document.getElementById('zoom-in').addEventListener('click', () => {
+          const rect = frame.getBoundingClientRect();
+          zoomAtPoint(1.2, rect.left + rect.width / 2, rect.top + rect.height / 2);
+        });
+        document.getElementById('zoom-out').addEventListener('click', () => {
+          const rect = frame.getBoundingClientRect();
+          zoomAtPoint(0.8, rect.left + rect.width / 2, rect.top + rect.height / 2);
+        });
+        document.getElementById('zoom-reset').addEventListener('click', () => {
+          // Snap back to "show entire map"
+          scale = minScale;           // baseScale
+          centerAtScale(scale);
+          applyTransform();
+        });
+      })();
+    </script>
+  </body>
 </html>
