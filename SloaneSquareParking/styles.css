@@ -60,7 +60,7 @@
 }
 
 .section-a-sidewalk {
-  height: 101px;
+  height: 102px;
   width: 100px;
   background-color: #d9d9d9;
   align-items: center;
@@ -88,8 +88,7 @@
   height: 1989px;
 }
 
-.section-2a {
-  /* west side walk */
+.section-2a {  /* west side walk */
   display: block;
   width: 100px;
   height: 1989px;
@@ -120,6 +119,7 @@
 }
 
 .section-2b-bcd {
+  display: block;
   width: 2529px;
   height: 1665px;
   border: 1px solid black;
@@ -135,4 +135,49 @@
   width: 304px;
   height: 1987px;
   border: 1px solid black;
+}
+
+.section-2b-bcd-bstalls {
+  display: flex;
+  width: 2196px;
+  height: 101;
+}
+
+.section-2b-bcd-stall {
+  width: 50px;
+  height: 100px;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.section-2b-bcd-northSideWalk {
+  width: 2194px;
+  height: 38px;
+  background-color: #D9D9D9;
+}
+
+.section-2b-bcd-building {
+  display: flex;
+  width: 2193px;
+  height: 1386px;
+  border: 1px solid black;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.section-2c {
+  display: flex;
+  width: 139px;
+  height: 1525px;
+  background-color: pink;
 }
