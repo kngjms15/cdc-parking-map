@@ -88,7 +88,8 @@
   height: 1989px;
 }
 
-.section-2a {  /* west side walk */
+.section-2a {
+  /* west side walk */
   display: block;
   width: 100px;
   height: 1989px;
@@ -131,7 +132,8 @@
   border: 1px solid black;
 }
 
-.section-2c { /* section - for fg stalls */
+.section-2c {
+  /* section - for fg stalls */
   width: 304px;
   height: 1987px;
   border: 1px solid black;
@@ -159,7 +161,7 @@
 .section-2b-bcd-northSideWalk {
   width: 2194px;
   height: 38px;
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
 }
 
 .section-2b-bcd-building {
@@ -180,4 +182,8 @@
   width: 139px;
   height: 1525px;
   background-color: pink;
+}
+
+.section-2b-bd-container {
+  display: flex;
 }
