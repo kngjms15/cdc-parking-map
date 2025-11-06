@@ -121,9 +121,10 @@
 
 .section-2b-bcd {
   display: block;
-  width: 2529px;
-  height: 1665px;
+  width: 2194px;
+  height: 1525px;
   border: 1px solid black;
+  background-color: green;
 }
 
 .section-2b-southDriveway {
@@ -181,9 +182,20 @@
   display: flex;
   width: 139px;
   height: 1525px;
-  background-color: pink;
 }
 
 .section-2b-bd-container {
   display: flex;
+}
+
+.section-2c-eastSideWalk {
+  width: 38px;
+  height: 1525px;
+  background-color: #d9d9d9;
+}
+
+.section-2c-cStalls {
+  display: block;
+  width: 50px;
+  height: 1525px;
 }
