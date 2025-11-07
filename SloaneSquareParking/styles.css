@@ -122,14 +122,14 @@
 .section-2b-bcd {
   display: block;
   width: 2194px;
-  height: 1525px;
-  border: 1px solid black;
+  height: 1527px;
   background-color: green;
 }
 
-.section-2b-southDriveway {
-  width: 2529px;
-  height: 159px;
+.section-2b-d-container {
+  display: block;
+  width: 2332px;
+  height: 140px;
   border: 1px solid black;
 }
 
@@ -198,4 +198,28 @@
   display: block;
   width: 50px;
   height: 1525px;
+}
+
+.section-2c-stall {
+  width: 100px;
+  height: 50px;
+  border: 1px solid black;
+}
+
+.section-2b-southSideWalk {
+  width: 2332px;
+  height: 38px;
+  background-color: #d9d9d9;
+}
+
+.section-2b-dStalls {
+  display: flex;
+  width: 2332px;
+  height: 100px;
+}
+
+.dStall {
+  width: 50px;
+  height: 100px;
+  border: 1px solid black;
 }
