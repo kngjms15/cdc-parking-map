@@ -103,7 +103,13 @@
 .section-2a-2 {
   width: 100px;
   height: 165px;
-  background-color: #d9d9d9;
+  background-color: blue;
+}
+
+.section-2c-fg {
+  width: 304px;
+  height: 1989px;
+  background-color: green;
 }
 
 .section-2b {
