@@ -1,94 +1,272 @@
+/* --- Pan/Zoom frame --- */
+.pz-frame {
+  width: 100%;
+  height: 90vh; /* Viewport height; adjust if you prefer */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden; /* Hide when panning out of bounds */
+  position: relative;
+  background: #fff;
+  touch-action: none; /* Enables custom touch gestures */
+}
+.pz-content {
+  /* We’ll transform this element via JS (translate + scale) */
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.pz-controls {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+.pz-controls button {
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: 600 14px "Segoe UI", sans-serif;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.pz-controls button:hover {
+  opacity: 0.9;
+}
+
+/* --- Your existing styles (with earlier fixes) --- */
 .parking-scroll-wrapper {
-  overflow-x: auto;
   width: 100%;
   border: none;
 }
-
 #cdc-parking {
   font-family: "Segoe UI", sans-serif;
-  width: 1200px;
-  margin: 0 auto;
+  display: block;
+  width: 3029px; /* Fixed “design size” for consistent baseline zoom */
+  height: 2258px;
+  margin: 0;
   background: #fff;
-  padding: 30px 10px;
+  padding: 10px 10px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 1px solid green;
   border-radius: 10px;
 }
 
-.lot-top {
-  display: block;
-  justify-content: center;
-  border: 1px solid red;
+/* Layout */
+.section-1 {
+  display: flex;
 }
 
-.stall {
-  width: 64px;
+.section-a-sidewalk {
+  height: 102px;
+  width: 100px;
+  background-color: #d9d9d9;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  text-align: center;
+}
+
+.section-a-stall {
+  width: 50px;
   height: 100px;
+  border: 1px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
   text-align: center;
-  border: 1px solid #ccc;
-  padding: 4px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-.lot-driveway {
-  width: 1174px;
+.section-2 {
+  display: flex;
+  width: 2975px;
+  height: 1989px;
+}
+
+.section-2a {
+  /* west side walk */
+  display: block;
+  width: 100px;
+  height: 1989px;
+}
+
+.section-2a-1 {
+  width: 100px;
+  height: 1824px;
+  background-color: #d9d9d9;
+}
+.section-2a-2 {
+  width: 100px;
+  height: 165px;
+}
+
+.section-2c-fg {
+  /* fg container */
+  display: block;
+  width: 304px;
+  height: 1989px;
+  border: 1px solid black;
+}
+
+.section-2b {
+  display: block;
+  width: 2580px;
+  height: 1989px;
+}
+
+.section-2b-northDriveway {
+  width: 2570px;
+  height: 159px;
+  background-color: #ffffff;
+}
+
+.section-2b-bcd {
+  display: block;
+  width: 2194px;
+  height: 1527px;
+}
+
+.section-2b-d-container {
+  display: block;
+  width: 2332px;
+  height: 140px;
+  border: 1px solid black;
+}
+
+.section-2c {
+  /* section - for fg stalls */
+  width: 304px;
+  height: 1987px;
+}
+
+.section-2b-bcd-bstalls {
+  display: flex;
+  width: 2196px;
+  height: 101;
+}
+
+.section-2b-bcd-stall {
+  width: 50px;
   height: 100px;
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  font-size: 34px;
-  color: navy;
-  align-items: center;
-  margin: 0 auto;
-}
-
-.lot-top-labels {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.labels-stalls {
-  width: 64px;
-  height: 26x;
+  border: 1px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
-  font-weight: bold;
   text-align: center;
-  color: green;
-  padding: 4px;
-  border: 1px solid #ccc;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-.lot-top-stalls {
+.section-2b-bcd-northSideWalk {
+  width: 2194px;
+  height: 38px;
+  background-color: #d9d9d9;
+}
+
+.section-2b-bcd-building {
   display: flex;
+  width: 2193px;
+  height: 1386px;
+  border: 1px solid black;
+  align-items: center;
   justify-content: center;
+  font-size: 100px;
   text-align: center;
-  flex-wrap: wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-.lot-bottom {
+.section-2c {
   display: flex;
-  justify-content: center;
-}
-.lot-bottom-stalls {
-  display: flex;
-  justify-content: left;
-  text-align: center;
-  flex-wrap: wrap;
+  width: 139px;
+  height: 1525px;
 }
 
-.lot-bottom-vertical {
-  width: 120px;
-  height: 384px;
-  background-color: #f0f0f0;
+.section-2b-bd-container {
+  display: flex;
+}
+
+.section-2c-eastSideWalk {
+  width: 38px;
+  height: 1525px;
+  background-color: #d9d9d9;
+}
+
+.section-2c-cStalls {
   display: block;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  border: 1px solid #ccc;
+  width: 50px;
+  height: 1525px;
+}
+
+.section-2c-stall {
+  width: 100px;
+  height: 50px;
+  border: 1px solid black;
+}
+
+.section-2b-southSideWalk {
+  width: 2332px;
+  height: 38px;
+  background-color: #d9d9d9;
+}
+
+.section-2b-dStalls {
+  display: flex;
+  width: 2332px;
+  height: 100px;
+}
+
+.dStall {
+  width: 50px;
+  height: 100px;
+  border: 1px solid black;
+}
+
+.section-2c-northDriveWay {
+  width: 304px;
+  height: 123px;
+  background-color: #ffffff;
+}
+
+.section-2c-gStalls {
+  display: flex;
+}
+
+.gStall {
+  width: 50px;
+  height: 100px;
+  border: 1px solid black;
+}
+
+.section-2c-fStalls-container {
+  display: flex;
+}
+
+.section-2c-fStalls {
+  display: block;
+}
+
+.fStall {
+  width: 100px;
+  height: 50px;
+  border: 1px solid black;
+}
+
+.section-3-container {
+  display: flex;
+  width: 2936px;
+  height: 100px;
+  border: 1px solid black;
+}
+
+.eStall {
+  width: 50px;
+  height: 100px;
+  border: 1px solid black;
 }
