@@ -84,7 +84,7 @@
 
 .section-2 {
   display: flex;
-  width: 2939px;
+  width: 2975px;
   height: 1989px;
 }
 
@@ -103,10 +103,10 @@
 .section-2a-2 {
   width: 100px;
   height: 165px;
-  background-color: blue;
 }
 
-.section-2c-fg { /* fg container */
+.section-2c-fg {
+  /* fg container */
   display: block;
   width: 304px;
   height: 1989px;
@@ -115,15 +115,14 @@
 
 .section-2b {
   display: block;
-  width: 2529px;
+  width: 2580px;
   height: 1989px;
 }
 
 .section-2b-northDriveway {
-  width: 2529px;
+  width: 2570px;
   height: 159px;
   background-color: #ffffff;
-  border: 1px solid black;
 }
 
 .section-2b-bcd {
@@ -143,7 +142,6 @@
   /* section - for fg stalls */
   width: 304px;
   height: 1987px;
-  border: 1px solid black;
 }
 
 .section-2b-bcd-bstalls {
