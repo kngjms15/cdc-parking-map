@@ -38,7 +38,7 @@ export default function ParkingLot({initialId, lotSize, customStyle}) {
 
     
     return(
-        <div>
+        <div className='relative'>
             <div
                 onDoubleClick={handleDoubleClick}
                 title={`${lotInfo.title}: ${lotInfo.description}`}
@@ -52,7 +52,7 @@ export default function ParkingLot({initialId, lotSize, customStyle}) {
             </div>
 
             {showEditor && (
-                <div className='absolute top-0 left-24 z-10 bg-white'>
+                <div className='absolute top-0 left-12 z-10 bg-white'>
                     <EditLot 
                         lotInfo={lotInfo} 
                         legend={legend}
