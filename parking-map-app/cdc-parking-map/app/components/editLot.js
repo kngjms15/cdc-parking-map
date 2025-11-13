@@ -21,7 +21,7 @@ export default function EditLot({ lotInfo, legend, onSave }) {
         "#3B82F6", //blue
         "#22C55E", //green
         "#EF4444", //red
-        "#EAB308", //yellow
+        "#EAB308", //gold
         "#A855F7", //purple
         "#F97316", //orange
         "#06B6D4", //turquoise
@@ -31,6 +31,10 @@ export default function EditLot({ lotInfo, legend, onSave }) {
         "#737373", // grey
         "#FCA5A5", // light pink
         "#FEF08A", // light yellow
+        "#94A3B8", // light grey
+        "#D97706", // brown
+        "#FCD34D", // yellow
+        "#C084FC", // light purple
     ]
 
     const handleSave = async () => {

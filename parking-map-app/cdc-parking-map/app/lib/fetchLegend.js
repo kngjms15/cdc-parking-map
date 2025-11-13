@@ -7,7 +7,7 @@
 
 export async function fetchLegend() {
     try {
-        const res = await fetch("_data/legend.json")
+        const res = await fetch(`/api?t=${Date.now()}`, {cache: 'no-store'});
         if(!res.ok) throw new Error("Failed to load Legend");
         const data = await res.json();
         return data;
