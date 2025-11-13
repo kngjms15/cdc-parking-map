@@ -15,12 +15,29 @@ export default function EditLot({ lotInfo, legend, onSave }) {
     const [title, setTitle] = useState(lotInfo.title);
     const [description, setDescription] = useState(lotInfo.description);
     const [save, setSave] = useState(false);
+    const [colour, setColour] = useState(lotInfo.colour || "#9CA3AF"); // default
+
+    const presetColours = [
+        "#3B82F6", //blue
+        "#22C55E", //green
+        "#EF4444", //red
+        "#EAB308", //yellow
+        "#A855F7", //purple
+        "#F97316", //orange
+        "#06B6D4", //turquoise
+        "#EC4899", //pink
+        "#84CC16", //light green
+        "#93C5FD", // light bluew
+        "#737373", // grey
+        "#FCA5A5", // light pink
+        "#FEF08A", // light yellow
+    ]
 
     const handleSave = async () => {
         setSave(true);
 
         const saveToLegend = legend.map((l) =>
-            l.id == lotInfo.id ? { ...l, title, description } : l
+            l.id == lotInfo.id ? { ...l, title, description, colour } : l
         );
 
         try {
@@ -58,6 +75,22 @@ export default function EditLot({ lotInfo, legend, onSave }) {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder='Description'
             />
+
+            <div className='mb-2'>
+                <p className='text-xs font-semibold mb-1'>Select Colour:</p>
+                <div className='flex flex-wrap gap-1'>
+                    {presetColours.map((hex) => (
+                        <button 
+                            key={hex}
+                            onClick={() => setColour(hex)}
+                            className={`w-6 h-6 rounded-md border-2 ${colour === hex ? "border-black scale-110" : "border-gray-300"} transition`}
+                            style={{ backgroundColor: hex }}
+                        />
+                    ))}
+
+                </div>
+            </div>
+
             <button 
                 onClick={handleSave}
                 disabled={save}
