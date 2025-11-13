@@ -9,6 +9,7 @@
 "use client"
 import {useState} from 'react';
 import { updateLegend } from '../lib/updateLegend';
+import ParkingMapFunctions from './parkingMapFunctions';
 
 export default function EditLot({ lotInfo, legend, onSave }) {
     const [title, setTitle] = useState(lotInfo.title);
@@ -36,7 +37,12 @@ export default function EditLot({ lotInfo, legend, onSave }) {
     
 
     return (
-        <div className={`border-gray-400 rounded-md shadow-lg p-2 w-48`}>
+        <div 
+            className={`border-gray-400 rounded-md shadow-lg p-2 w-48`}
+            onMouseDown={(e) => e.stopPropagation()}
+            onMouseMove={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+        >
             <h2 className='text-sm font-semibold mb-1'>
                 Edit Lot #{lotInfo.id}
             </h2>
