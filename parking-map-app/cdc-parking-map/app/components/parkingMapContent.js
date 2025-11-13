@@ -23,7 +23,7 @@ export default function ParkingMapContents() {
     const section3E2LotsId = [211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250]
 
     return(
-        <div>
+        <div className=''>
             <div className="section-1">
                 <div className="section-a-sidewalk"></div>
                     {sectionALotsId.map((id) => (
@@ -126,7 +126,7 @@ export default function ParkingMapContents() {
                                 <div className=" bg-[#d9d9d9]" style={{height: "55px", width: "100px"}}></div>
 
                                 <div>
-                                    <ParkingLot initialId={handicap3} lotSize={"section-2c-stall"} customStyle={{height: "88px" }} />
+                                    <ParkingLot initialId={handicap3} lotSize={"section-2c-stall"} customStyle={{height: "100px" }} />
                                 </div>
 
                                 {section2C2LotsId.map((id) => (

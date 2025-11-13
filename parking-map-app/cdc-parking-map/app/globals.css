@@ -26,7 +26,7 @@ body {
 }
 
 /* PARKING MAP -------------------------------------------------------*/
-/* note: all stall widths originally 50px */
+/* note: all stall widths or heights (depending on lot orientation) originally 50px */
 /* --- Pan/Zoom frame --- */
 .pz-frame {
   width: 100%;
@@ -99,7 +99,7 @@ body {
 }
 /* width originally 50 */
 .section-a-stall {
-  width: 52px; 
+  width: 53px; 
   height: 100px;
   border: 1px solid black;
   display: flex;
@@ -235,7 +235,7 @@ body {
 
 .section-2c-stall {
   width: 100px;
-  height: 51px;
+  height: 54.3px;
   border: 1px solid black;
 }
 
@@ -283,7 +283,7 @@ body {
 
 .fStall {
   width: 100px;
-  height: 50px;
+  height: 51.9px;
   border: 1px solid black;
 }
 
@@ -295,7 +295,7 @@ body {
 }
 
 .eStall {
-  width: 50px;
+  width: 52px;
   height: 100px;
   border: 1px solid black;
 }

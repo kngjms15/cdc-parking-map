@@ -41,7 +41,7 @@ export default function ParkingMap() {
                         onMouseMove={handleMouseMove}
                         onMouseUp={handleMouseUp}
                         onMouseLeave={handleMouseUp}
-                        className="absolute top-0 left-0 cursor-grab active:cursor-grabbing"
+                        className="absolute top-0 left-0 cursor-grab active:cursor-grabbing border-2 p-4"
                         style={{
                             transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
                             transformOrigin: "center center",
