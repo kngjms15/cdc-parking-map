@@ -20,7 +20,7 @@
 }
 
 .pz-controls {
-  position: absolute;
+  position: fixed;
   right: 12px;
   bottom: 12px;
   display: flex;
